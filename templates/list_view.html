@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <ul>
+    {% for obj in objects %}
+        <li><a href="{{ obj.get_absolute_url }}" > {% include 'osoba.html' with osoba=obj %}</a></li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
