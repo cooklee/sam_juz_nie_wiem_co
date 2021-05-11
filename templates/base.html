@@ -6,13 +6,20 @@
 </head>
 <body>
 <div class="content">
+    {% if user.is_authenticated %}
+        {{ user.username }}
+         <p><a href="{% url 'logout' %}">Wyloguj</a></p>
+    {% else %}
+        <p><a href="{% url 'register' %}">rejestracja</a> </p>
+        <p><a href="{% url 'login' %}">Zaloguj</a></p>
+    {% endif %}
     {% include 'main_buttons.html' with piesek='reksio'%}
     <h1>Witaj w świecie Filmow</h1>
     {% block content %}
     {% endblock %}
 
 <div class="footer">
-    {{date}} {{ datf }}
+    {{date}}
 </div>
 koniec
 

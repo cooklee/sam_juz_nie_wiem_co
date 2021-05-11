@@ -2,8 +2,16 @@
 
 {% block content %}
     <form method="post">
-      {% csrf_token %}
-        {{form.as_p}}
-        <p><input type="submit" ></p>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><input type="submit"></p>
     </form>
+    <ul>
+        {% for show in tvshows %}
+            <li>
+            {{ show }}
+            </li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}

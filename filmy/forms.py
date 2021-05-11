@@ -1,5 +1,5 @@
 from django import forms
-from filmy.models import Person, Movie
+from filmy.models import Person, Movie, Genre
 # class Person(models.Model):
 #     first_name = models.CharField(max_length=64)
 #     last_name = models.CharField(max_length=64)
@@ -32,7 +32,15 @@ class MovieForm(forms.Form):
 class MovieModelForm(forms.ModelForm):
     class Meta:
         model = Movie
-        #fields = ['year', 'title']
-        exclude = ['category']
+        fields = ['category', 'year', 'director', 'title', 'screen_play']
+        widgets = {
+            'title':forms.TextInput(attrs={'placeholder':'ala ma kota'}),
+            'category': forms.CheckboxSelectMultiple()
+        }
 
+
+class GenreModelForm(forms.ModelForm):
+    class Meta:
+        model = Genre
+        fields = '__all__'
 

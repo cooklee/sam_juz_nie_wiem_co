@@ -1,13 +1,23 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
-
-
 
 # Create your models here.
 from django.urls import reverse
+from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 class Genre(models.Model):
     name = models.CharField(max_length=32)
+    slug = models.SlugField()
+
+    def __str__(self):
+        return self.name
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.slug = slugify(self.name)
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class Person(models.Model):
@@ -19,17 +29,42 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return f"/update_persons/{self.pk}/"
-        return reverse("update_persons", args=(self.pk,))
+
+
+def check_year(value):
+    if value < 1900:
+        raise ValidationError("podany rok jest za mały powinnien być większy niz 1899")
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=128)
-    year = models.IntegerField(null=True)
-    director = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='directed_by')
-    screen_play = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='written_by', null=True)
+    title = models.CharField(max_length=128, )
+    year = models.IntegerField(null=True, verbose_name='rok', validators=[check_year])
+    director = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='directed_by', verbose_name='reżyser')
+    screen_play = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='written_by', null=True,
+                                    verbose_name='scenażysta')
     category = models.ManyToManyField(Genre)
 
-class MovieRating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('update_movie', args=(self.id,))
+
+PRODUCERS = (
+    (1, 'Netflix'),
+    (2, 'HBO'),
+    (3, 'Amazon'),
+    (4, 'Disney'),
+)
+
+class TvShow(models.Model):
+    title = models.CharField(max_length=128)
+    year = models.IntegerField()
+    director = models.ForeignKey(Person, on_delete=models.CASCADE)
+    owner = models.IntegerField(choices=PRODUCERS)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('detail_tvshow', args=(self.id,))

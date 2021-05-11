@@ -1,11 +1,14 @@
+from datetime import datetime
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from datetime import datetime
 # Create your views here.
+from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
 
-from filmy.forms import PersonForm, MovieForm, MovieModelForm
-from filmy.models import Person, Movie
+from filmy.forms import PersonForm, MovieForm, MovieModelForm, GenreModelForm
+from filmy.models import Person, Movie, TvShow
 
 
 class IndexView(View):
@@ -47,6 +50,11 @@ class ListPersonView(View):
 
     def get(self, request):
         return render(request, 'list_view.html', {"objects": Person.objects.all()})
+
+class ListMovieView(View):
+
+    def get(self, request):
+        return render(request, 'list_view.html', {"objects": Movie.objects.all()})
 
 
 class UpdatePersonView(View):
@@ -100,9 +108,61 @@ class CreateMovieViewByModelForm(View):
     def post(self, request):
         form = MovieModelForm(request.POST)
         if form.is_valid():
-            movie = form.save(commit=False)
+            movie = form.save()
+        return render(request, 'form_with_python_form.html', {"form":form})
 
-        return HttpResponse("udało sie dodać dziada")
+class UpdateMovieViewByModelForm(View):
+
+    def get(self, request, id):
+        movie = Movie.objects.get(pk=id)
+        form = MovieModelForm(instance=movie)
+        return render(request, 'form_with_python_form.html', {'form': form})
+
+    def post(self, request, id):
+        movie = Movie.objects.get(pk=id)
+        form = MovieModelForm(request.POST, instance=movie)
+        if form.is_valid():
+            movie = form.save()
+        return render(request, 'form_with_python_form.html', {"form":form})
+
+class CreateGenreViewByModelForm(View):
+
+    def get(self, request):
+        form = GenreModelForm()
+        return render(request, 'form_with_python_form.html', {'form': form})
+
+    def post(self, request):
+        form = GenreModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return render(request, 'form_with_python_form.html', {"form":form})
+
+
+class CreateTvShowView(CreateView):
+    model = TvShow
+    template_name = 'form_with_python_form.html'
+    success_url = reverse_lazy('index')
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['seriale'] = TvShow.objects.all()
+        return data
+
+
+class UpdateTvShowView(UpdateView):
+    model = TvShow
+    template_name = 'form_with_python_form.html'
+    fields = '__all__'
+
+class ListTvShowView(ListView):
+    model = TvShow
+    template_name = 'list_view.html'
+
+
+class DetailTvShowView(DetailView):
+    model = TvShow
+    template_name = 'detail_view.html'
 
 
 

@@ -1,7 +1,10 @@
 <ul>
-    <li><a href=""> Filmy  {{ piesek }}</a></li>
+    <li><a href="{% url 'view_movies' %}"> Filmy</a></li>
     <li><a href="{% url 'create_movie' %}">Dodaj Film</a></li>
     <li><a href="{% url 'create_movie_model_form' %}">Dodaj Film by model form</a></li>
     <li><a href="{% url 'view_persons' %}">Ludzie</a></li>
     <li><a href="{% url 'add_person_form' %}">dodaj Osobe</a></li>
+    <li><a href="{% url 'add_genre' %}">dodaj Gatunek</a></li>
+    <li><a href="{% url 'add_tvshow' %}">dodaj Serial</a></li>
+
 </ul>
