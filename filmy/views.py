@@ -1,17 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
+from datetime import datetime
 # Create your views here.
 from django.views import View
 
-from filmy.forms import PersonForm, MovieForm
+from filmy.forms import PersonForm, MovieForm, MovieModelForm
 from filmy.models import Person, Movie
 
 
 class IndexView(View):
 
     def get(self, request):
-        return render(request, 'base.html')
+        return render(request, 'base.html' , {'data':datetime.now()})
 
 
 class CreatePersonView(View):
@@ -90,6 +90,20 @@ class CreateMovieView(View):
             director = form.cleaned_data['director']
             Movie.objects.create(title=title, director=director)
         return HttpResponse("udało sie dodać dziada")
+
+class CreateMovieViewByModelForm(View):
+
+    def get(self, request):
+        form = MovieModelForm()
+        return render(request, 'form_with_python_form.html', {'form': form})
+
+    def post(self, request):
+        form = MovieModelForm(request.POST)
+        if form.is_valid():
+            movie = form.save(commit=False)
+
+        return HttpResponse("udało sie dodać dziada")
+
 
 
 

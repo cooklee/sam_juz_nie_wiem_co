@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -23,4 +24,12 @@ class Person(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=128)
-    director = models.ForeignKey(Person, on_delete=models.CASCADE)
+    year = models.IntegerField(null=True)
+    director = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='directed_by')
+    screen_play = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='written_by', null=True)
+    category = models.ManyToManyField(Genre)
+
+class MovieRating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    rating = models.IntegerField()

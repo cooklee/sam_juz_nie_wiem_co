@@ -1,5 +1,5 @@
 from django import forms
-from filmy.models import  Person
+from filmy.models import Person, Movie
 # class Person(models.Model):
 #     first_name = models.CharField(max_length=64)
 #     last_name = models.CharField(max_length=64)
@@ -27,3 +27,12 @@ class PersonForm(forms.Form):
 class MovieForm(forms.Form):
     title = forms.CharField(max_length=128)
     director = forms.ModelChoiceField(queryset=Person.objects.all())
+
+
+class MovieModelForm(forms.ModelForm):
+    class Meta:
+        model = Movie
+        #fields = ['year', 'title']
+        exclude = ['category']
+
+

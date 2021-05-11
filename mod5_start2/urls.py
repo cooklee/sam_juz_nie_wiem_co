@@ -25,4 +25,6 @@ urlpatterns = [
     path("view_persons/", views.ListPersonView.as_view(), name='view_persons'),
     path("update_persons/<int:id>/", views.UpdatePersonView.as_view(), name='update_persons'),
     path("add_movie/", views.CreateMovieView.as_view(), name='create_movie'),
+    path("add_movie_model_form/", views.CreateMovieViewByModelForm.as_view(), name='create_movie_model_form'),
+
 ]
